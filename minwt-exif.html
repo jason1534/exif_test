@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>梅問題‧教學網-範例展示【jQuery.Exif】</title>
+
+</head>
+<body>
+<img src="images/cat.jpg" id="img" exif="true" alt="点击图片查看GPS信息" title="tiger" width="500"/>
+</body>
+<script src="js/jquery-1.4.4.min.js"></script>
+<script src="js/jquery.exif.js"></script>
+<script>
+$(function(){
+    
+    $("#img").on("click", function () {
+        var lat_ref = $(this).exif("GPSLatitudeRef");
+        if(typeof lat_ref[0] == "undefined"){
+            console.log("图片没有GPS信息");
+            return false;
+        }
+        var $this = $(this);
+        var lat = $this.exif("GPSLatitude");        //纬度
+        var lng = $this.exif("GPSLongitude");       //经度
+        var lng_ref = $this.exif("GPSLongitudeRef");
+        var make = $this.exif("Make");              //相机
+        var model = $this.exif("Model");            //型号
+        var t = $this.exif("ExposureTime");         //快门
+        var f = $this.exif("FNumber");              //光圈
+        var length = $this.exif("FocalLength");
+        var iso = $this.exif("ISOSpeedRatings");    //ISO
+        var ev = $this.exif("ExposureBias");
+        var soft = $this.exif("Software");          //软体
+        var date = $this.exif("DateTime");          //拍摄时间
+        var dpi = $this.exif("XResolution");
+        var sa = $this.exif("Saturation");
+        var sha = $this.exif("Sharpness");
+        var wb = $this.exif("WhiteBalance");
+        var lat_ref = $this.exif("GPSLatitudeRef");//North or South
+        var lat = $this.exif("GPSLatitude");       //纬度值
+        var lng_ref = $this.exif("GPSLongitudeRef");//West or East
+        var lng = $this.exif("GPSLongitude");
+        var lng_s = lng_ref == "E" ? "东经：" : "西经：";
+        var lat_s = lat_ref == "N" ? "北纬：" : "南纬：";
+        
+        
+        console.log(lat_s+change_latlng(lat)+"\r\n"+lng_s+change_latlng(lng));
+        console.log("相机：" + make + "，型号：" + model + ",拍摄时间：" + date);
+    });
+    function change_latlng(latlng){ //经纬度转换为十进制     
+        var arr=latlng;
+        return arr[0][0]+arr[0][1]/60+arr[0][2]/3600;
+    }
+});
+</script>
+</html>
