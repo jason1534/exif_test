@@ -2,55 +2,85 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta content="all" name="minwt" />
+<meta name="author" content="男丁格爾&梅干扣肉" />
+<meta name="Copyright" content="www.minwt.com版權所有" />
+<meta name="keywords" content="梅問題,教學網,jquery教學,jquery頁籤,CSS tab Menu,css教學,網頁教學">
 <title>梅問題‧教學網-範例展示【jQuery.Exif】</title>
+<style>
+	body{background:#efefef;}
+	h1 ,p{padding:0; margin:0;}
+	div{font-size:13px; color:#444; line-height:1.8em;}
+	.ImageExif{margin:0 auto; width:900px; background:#fff; padding:10px; overflow:hidden;}
+	.alumb{padding:10px; width:390px; float:left;}
+	.alumb img{margin:10px 0; border:solid 5px #ccc;}	
+	.exif-data{float:left; text-align:left; width:260px; padding:10px; margin-top:40px;}
+</style>
 
-</head>
-<body>
-<img src="images/cat.jpg" id="img" exif="true" alt="点击图片查看GPS信息" title="tiger" width="500"/>
-</body>
 <script src="js/jquery-1.4.4.min.js"></script>
 <script src="js/jquery.exif.js"></script>
 <script>
-$(function(){
-    
-    $("#img").on("click", function () {
-        var lat_ref = $(this).exif("GPSLatitudeRef");
-        if(typeof lat_ref[0] == "undefined"){
-            console.log("图片没有GPS信息");
-            return false;
-        }
-        var $this = $(this);
-        var lat = $this.exif("GPSLatitude");        //纬度
-        var lng = $this.exif("GPSLongitude");       //经度
-        var lng_ref = $this.exif("GPSLongitudeRef");
-        var make = $this.exif("Make");              //相机
-        var model = $this.exif("Model");            //型号
-        var t = $this.exif("ExposureTime");         //快门
-        var f = $this.exif("FNumber");              //光圈
-        var length = $this.exif("FocalLength");
-        var iso = $this.exif("ISOSpeedRatings");    //ISO
-        var ev = $this.exif("ExposureBias");
-        var soft = $this.exif("Software");          //软体
-        var date = $this.exif("DateTime");          //拍摄时间
-        var dpi = $this.exif("XResolution");
-        var sa = $this.exif("Saturation");
-        var sha = $this.exif("Sharpness");
-        var wb = $this.exif("WhiteBalance");
-        var lat_ref = $this.exif("GPSLatitudeRef");//North or South
-        var lat = $this.exif("GPSLatitude");       //纬度值
-        var lng_ref = $this.exif("GPSLongitudeRef");//West or East
-        var lng = $this.exif("GPSLongitude");
-        var lng_s = lng_ref == "E" ? "东经：" : "西经：";
-        var lat_s = lat_ref == "N" ? "北纬：" : "南纬：";
-        
-        
-        console.log(lat_s+change_latlng(lat)+"\r\n"+lng_s+change_latlng(lng));
-        console.log("相机：" + make + "，型号：" + model + ",拍摄时间：" + date);
-    });
-    function change_latlng(latlng){ //经纬度转换为十进制     
-        var arr=latlng;
-        return arr[0][0]+arr[0][1]/60+arr[0][2]/3600;
-    }
+$(window).load(function(){
+		var $this=$("#img").exifLoad(function(){
+			var make=$this.exif("Make");
+			var model=$this.exif("Model");
+			var t=$this.exif("ExposureTime");
+			var f=$this.exif("FNumber");
+			var length=$this.exif("FocalLength");
+			var iso=$this.exif("ISOSpeedRatings");
+			var ev=$this.exif("ExposureBias");
+			var soft=$this.exif("Software");
+			var date=$this.exif("DateTime");
+			var dpi=$this.exif("XResolution");
+			var sa=$this.exif("Saturation");
+			var sha=$this.exif("Sharpness");
+			var wb=$this.exif("WhiteBalance");
+		
+			if(t<1){
+				t="1/"+Math.round(1/t);
+			}else{
+				t=t+"秒";
+			}
+			var evnum = new Number(ev);
+			ev=evnum.toFixed(1);		
+			
+			var showExit= "相機："+make+"<br>"+
+						　"型號："+model+"<br>"+
+						　"快門："+t+" ("+$this.exif("ExposureTime")+"sec)<br>"+
+						　"光圈：F"+f+"<br>"+
+						　"ISO："+iso+"<br>"+
+						　"焦段："+length+"mm<br>"+
+						　"曝光補償："+ev+"<br>"+
+						  "白平衡："+wb+"<br>"+
+						  "飽和度："+sa+"<br>"+
+						  "銳利度："+sha+"<br>"+
+						　"軟體："+soft+"<br>"+
+						  "解析度："+dpi+"DPI<br>"+					 
+						  "日期："+date;
+			
+			$(".exif-data").html(showExit.replace(new RegExp(String.fromCharCode(0), "g"), ''));
+		  
+			var title=$this.attr("title");
+			var ps=$this.attr("alt");
+			$(".alumb h1").html(title);	
+			$(".alumb p").html(ps);	
+			
+			alert("完整Exif資料：\r\n \r\n"+$this.exifPretty());
+	});	
+	
 });
+
 </script>
+</head>
+
+<body>
+<div class="ImageExif">
+	<div class="alumb">
+		<h1></h1>		
+		<img src="images/cat.jpg" id="img" exif="true" alt="自然光+Nikon 50mm F1.8" title="20100418台大廢墟" width="380"/>
+		<p></p>
+	</div>
+	<div class="exif-data"></div>
+</div>
+</body>
 </html>
